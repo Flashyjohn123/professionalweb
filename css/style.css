@@ -832,6 +832,150 @@ img {
   line-height: 1.65;
 }
 
+/* Compact Roles & Education Card (Streamlined Snapshot) */
+.compact-creds-card {
+  background: var(--paper-card);
+  border: 1px solid var(--line-strong);
+  border-radius: 1.5rem;
+  padding: clamp(1.6rem, 3vw, 2.2rem);
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.compact-creds-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--teal), var(--coral), var(--gold));
+}
+
+.compact-creds-card h3 {
+  font-family: var(--serif);
+  font-size: 1.6rem;
+  margin: 0 0 1.25rem;
+  color: var(--ink);
+}
+
+.compact-role {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.compact-role-badge {
+  background: var(--teal-light);
+  color: var(--teal-dark);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.compact-role-badge.coral {
+  background: #fde8e5;
+  color: var(--coral);
+}
+
+.compact-role h4 {
+  margin: 0 0 0.3rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.compact-role h4 a {
+  color: var(--teal);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.compact-role p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--ink-light);
+}
+
+.compact-edu-strip {
+  margin-top: 1.2rem;
+  padding: 1.1rem;
+  background: var(--white);
+  border-radius: 1rem;
+  border: 1px solid var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.compact-edu-strip strong {
+  display: block;
+  font-size: 0.98rem;
+  color: var(--ink);
+}
+
+.compact-edu-strip span {
+  font-size: 0.85rem;
+  color: var(--ink-light);
+}
+
+.compact-edu-strip .edu-tag {
+  background: var(--teal);
+  color: var(--white);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+}
+
+.quote-mini {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--gold);
+  border-radius: 1rem;
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 2rem;
+}
+
+.quote-mini .quote-mark {
+  font-family: var(--serif);
+  font-size: 2.2rem;
+  line-height: 1;
+  color: var(--gold);
+  display: block;
+  margin-bottom: -0.5rem;
+}
+
+.quote-mini p {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.15rem;
+  line-height: 1.55;
+  color: var(--ink);
+  margin: 0 0 0.5rem;
+}
+
+.quote-mini small {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--teal);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
 /* ==========================================================================
    INTERACTIVE BOOK COMPONENT (Flipping Pages Left-to-Right)
    ========================================================================== */
