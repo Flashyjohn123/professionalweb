@@ -6,29 +6,29 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,500;1,6..72,600&family=Space+Grotesk:wght@500;700&display=swap");
 
 :root {
-  /* Vibrant & Academic Palette */
-  --ink: #111a36;
-  --ink-light: #243056;
-  --paper: #f8f5ee;
-  --paper-deep: #eee6d6;
-  --paper-card: #fffdf8;
-  --coral: #f05442;
-  --coral-hover: #d94332;
-  --gold: #f5b72b;
-  --gold-warm: #e6a519;
-  --teal: #0d847c;
-  --teal-dark: #096862;
-  --teal-light: #e5f6f4;
-  --indigo: #27316a;
-  --indigo-light: #3a4791;
-  --emerald: #10b981;
+  /* High-End Educational Design System (Chalkboard Green, Schoolhouse Red, Pencil Gold & Crisp Paper) */
+  --ink: #0d1a30;            /* Scholastic Deep Navy Ink */
+  --ink-light: #223554;      /* Academic Slate */
+  --paper: #faf7f0;          /* Warm Manila / Book Paper */
+  --paper-deep: #f1ebd9;     /* Library Cardstock / Desk Wood */
+  --paper-card: #ffffff;     /* Crisp Worksheet / Index Card */
+  --coral: #c93b2b;          /* Schoolhouse Apple Crimson */
+  --coral-hover: #b33021;    /* Deep Red Accent */
+  --gold: #f2a91a;           /* No. 2 Pencil Goldenrod */
+  --gold-warm: #db930e;      /* Amber Sunshine */
+  --teal: #14594c;           /* Classic Chalkboard Academic Green */
+  --teal-dark: #0d4238;      /* Deep Ivy Green */
+  --teal-light: #eaf4f1;     /* Soft Mint Wash */
+  --indigo: #1b3d6d;         /* Collegiate Blue */
+  --indigo-light: #2b5695;   /* Library Sky */
+  --emerald: #15803d;        /* Positive Growth Green */
   --white: #ffffff;
-  --line: rgba(17, 26, 54, 0.14);
-  --line-strong: rgba(17, 26, 54, 0.28);
-  --shadow-sm: 0 4px 12px rgba(17, 26, 54, 0.06);
-  --shadow-md: 0 12px 30px rgba(17, 26, 54, 0.09);
-  --shadow-lg: 0 20px 48px rgba(17, 26, 54, 0.14);
-  --shadow-card: 0 16px 40px rgba(17, 26, 54, 0.08);
+  --line: rgba(13, 26, 48, 0.12);
+  --line-strong: rgba(13, 26, 48, 0.22);
+  --shadow-sm: 0 4px 12px rgba(13, 26, 48, 0.05);
+  --shadow-md: 0 12px 30px rgba(13, 26, 48, 0.08);
+  --shadow-lg: 0 22px 50px rgba(13, 26, 48, 0.13);
+  --shadow-card: 0 16px 40px rgba(13, 26, 48, 0.07);
 
   /* Typography */
   --serif: "Newsreader", Georgia, serif;
@@ -471,7 +471,7 @@ img {
 .button-primary:hover {
   background: var(--teal);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(13, 132, 124, 0.28);
+  box-shadow: 0 8px 20px rgba(20, 89, 76, 0.28);
 }
 
 .button-coral {
@@ -482,7 +482,7 @@ img {
 .button-coral:hover {
   background: var(--coral-hover);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(240, 84, 66, 0.3);
+  box-shadow: 0 8px 20px rgba(201, 59, 43, 0.3);
 }
 
 .button-ghost {
@@ -519,8 +519,8 @@ img {
    HERO SECTION
    ========================================================================== */
 .hero {
-  background: radial-gradient(circle at 86% 25%, rgba(245, 183, 43, 0.35), transparent 26rem),
-              radial-gradient(circle at 10% 80%, rgba(13, 132, 124, 0.15), transparent 22rem),
+  background: radial-gradient(circle at 86% 25%, rgba(242, 169, 26, 0.28), transparent 26rem),
+              radial-gradient(circle at 10% 80%, rgba(20, 89, 76, 0.16), transparent 22rem),
               var(--paper);
   padding-top: clamp(3.5rem, 6vw, 6.5rem);
   padding-bottom: 0;
@@ -621,7 +621,7 @@ img {
   height: 82px;
   border: 2px solid var(--gold);
   border-radius: 50%;
-  box-shadow: 0 0 0 14px rgba(245, 183, 43, 0.18);
+  box-shadow: 0 0 0 14px rgba(242, 169, 26, 0.18);
   animation: pulseSun 4s ease-in-out infinite;
 }
 
@@ -807,7 +807,7 @@ img {
 }
 
 .principles-list article:hover {
-  background: rgba(13, 132, 124, 0.03);
+  background: rgba(20, 89, 76, 0.03);
 }
 
 .principles-list article > span {
@@ -980,8 +980,8 @@ img {
    INTERACTIVE BOOK COMPONENT (Flipping Pages Left-to-Right)
    ========================================================================== */
 .book-section {
-  background: radial-gradient(circle at 18% 22%, rgba(245, 183, 43, 0.2), transparent 28rem),
-              radial-gradient(circle at 82% 80%, rgba(13, 132, 124, 0.18), transparent 30rem),
+  background: radial-gradient(circle at 18% 22%, rgba(242, 169, 26, 0.18), transparent 28rem),
+              radial-gradient(circle at 82% 80%, rgba(20, 89, 76, 0.16), transparent 30rem),
               var(--paper-deep);
   position: relative;
   overflow: hidden;
@@ -1313,7 +1313,7 @@ img {
 
 .book-quote-callout {
   border-left: 3px solid var(--gold);
-  background: rgba(245, 183, 43, 0.09);
+  background: rgba(242, 169, 26, 0.09);
   padding: 0.9rem 1.1rem;
   border-radius: 0 0.8rem 0.8rem 0;
   font-family: var(--serif);
@@ -1373,7 +1373,7 @@ img {
 .book-dot.active {
   background: var(--teal);
   transform: scale(1.3);
-  box-shadow: 0 0 0 3px rgba(13, 132, 124, 0.2);
+  box-shadow: 0 0 0 3px rgba(20, 89, 76, 0.2);
 }
 
 /* ==========================================================================
@@ -1719,7 +1719,7 @@ img {
   font-size: 0.68rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  background: rgba(245, 183, 43, 0.25);
+  background: rgba(242, 169, 26, 0.25);
   color: var(--gold);
   padding: 0.25rem 0.65rem;
   border-radius: 999px;
@@ -1817,7 +1817,7 @@ img {
 .timeline-card:hover {
   box-shadow: var(--shadow-md);
   transform: translateX(4px);
-  border-color: rgba(13, 132, 124, 0.35);
+  border-color: rgba(20, 89, 76, 0.35);
 }
 
 .timeline-meta {
@@ -2055,9 +2055,9 @@ img {
 }
 
 .skill-board article:nth-child(1) { background: var(--paper-card); }
-.skill-board article:nth-child(2) { background: rgba(245, 183, 43, 0.16); }
-.skill-board article:nth-child(3) { background: rgba(13, 132, 124, 0.08); }
-.skill-board article:nth-child(4) { background: rgba(240, 84, 66, 0.09); }
+.skill-board article:nth-child(2) { background: rgba(242, 169, 26, 0.16); }
+.skill-board article:nth-child(3) { background: rgba(20, 89, 76, 0.08); }
+.skill-board article:nth-child(4) { background: rgba(201, 59, 43, 0.09); }
 
 .skill-index {
   font-family: var(--serif);
@@ -2401,7 +2401,7 @@ img {
   background: var(--paper);
   transform: translateY(-4px);
   box-shadow: var(--shadow-md);
-  border-color: rgba(13, 132, 124, 0.4);
+  border-color: rgba(20, 89, 76, 0.4);
 }
 
 .directory-grid > a > span {
@@ -2455,8 +2455,8 @@ img {
    STUDENT PORTAL
    ========================================================================== */
 .student-hero {
-  background: radial-gradient(circle at 14% 18%, rgba(245, 183, 43, 0.32), transparent 26rem),
-              radial-gradient(circle at 86% 75%, rgba(13, 132, 124, 0.18), transparent 26rem),
+  background: radial-gradient(circle at 14% 18%, rgba(242, 169, 26, 0.25), transparent 26rem),
+              radial-gradient(circle at 86% 75%, rgba(20, 89, 76, 0.16), transparent 26rem),
               var(--paper);
   min-height: 700px;
   display: flex;
