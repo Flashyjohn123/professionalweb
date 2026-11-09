@@ -199,35 +199,249 @@ const bookSpreads = [
 ];
 
 let currentSpreadIndex = 0;
+let isBookFlipping = false;
 
 function initInteractiveBook() {
-  const container = document.getElementById('interactive-book');
+  const container = document.getElementById('interactive-book') || document.getElementById('book-spread');
   const prevBtn = document.getElementById('book-prev');
   const nextBtn = document.getElementById('book-next');
   const dotsContainer = document.getElementById('book-dots');
   const spreadLabel = document.getElementById('book-spread-label');
 
   if (!container || !prevBtn || !nextBtn) return;
+  container.id = 'interactive-book';
 
-  // Render initial spread
-  renderSpread(currentSpreadIndex);
+  function renderPageHtml(page, isRightPage = false) {
+    if (!page) return '';
+    const cornerHint = isRightPage
+      ? `<span class="book-corner-hint" aria-hidden="true">Turn Page →</span>`
+      : `<span class="book-corner-hint" aria-hidden="true">← Turn Page</span>`;
 
-  // Setup click listeners
-  prevBtn.addEventListener('click', () => {
-    if (currentSpreadIndex > 0) {
-      currentSpreadIndex--;
-      renderSpread(currentSpreadIndex);
-      playFlipEffect();
+    return `
+      <div class="book-page-header">
+        <span class="book-chapter">${page.chapter}</span>
+        <span class="book-page-num">${page.pageNum}</span>
+      </div>
+      <div class="book-page-content">
+        <h3>${page.title}</h3>
+        ${page.content}
+      </div>
+      <div class="book-page-footer">
+        <span>${page.footer}</span>
+        <span>Educator Notebook</span>
+      </div>
+      ${cornerHint}
+    `;
+  }
+
+  function renderBaseSpread(index) {
+    const spread = bookSpreads[index];
+    const leftEl = container.querySelector('.book-page-left');
+    const rightEl = container.querySelector('.book-page-right');
+
+    if (leftEl) leftEl.innerHTML = renderPageHtml(spread.left, false);
+    if (rightEl) rightEl.innerHTML = renderPageHtml(spread.right, true);
+  }
+
+  function updateMeta(index) {
+    const spread = bookSpreads[index];
+    if (spreadLabel) {
+      spreadLabel.textContent = `Pages ${spread.left.pageNum}–${spread.right.pageNum} of 06`;
     }
-  });
 
-  nextBtn.addEventListener('click', () => {
-    if (currentSpreadIndex < bookSpreads.length - 1) {
-      currentSpreadIndex++;
-      renderSpread(currentSpreadIndex);
-      playFlipEffect();
+    if (prevBtn) prevBtn.disabled = index === 0;
+    if (nextBtn) nextBtn.disabled = index === bookSpreads.length - 1;
+
+    if (dotsContainer) {
+      dotsContainer.innerHTML = '';
+      bookSpreads.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.className = `book-dot ${i === index ? 'active' : ''}`;
+        dot.setAttribute('aria-label', `Go to spread ${i + 1}`);
+        dot.type = 'button';
+        dot.addEventListener('click', () => {
+          goToSpread(i);
+        });
+        dotsContainer.appendChild(dot);
+      });
     }
-  });
+  }
+
+  // Initial render
+  renderBaseSpread(currentSpreadIndex);
+  updateMeta(currentSpreadIndex);
+
+  function flipNext() {
+    if (isBookFlipping || currentSpreadIndex >= bookSpreads.length - 1) return;
+
+    // Mobile fallback if stacked layout
+    if (window.innerWidth <= 768) {
+      playMobileFlip(currentSpreadIndex + 1);
+      return;
+    }
+
+    isBookFlipping = true;
+    container.classList.add('page-flip-animating');
+
+    const fromIndex = currentSpreadIndex;
+    const toIndex = currentSpreadIndex + 1;
+    const fromSpread = bookSpreads[fromIndex];
+    const toSpread = bookSpreads[toIndex];
+
+    const leftBase = container.querySelector('.book-page-left');
+    const rightBase = container.querySelector('.book-page-right');
+    if (!leftBase || !rightBase) {
+      isBookFlipping = false;
+      return;
+    }
+
+    // Underlying right page immediately holds the destination right page
+    rightBase.innerHTML = renderPageHtml(toSpread.right, true);
+
+    // Clean up any stale flipper
+    const oldFlipper = container.querySelector('.book-flipper');
+    if (oldFlipper) oldFlipper.remove();
+
+    // Create 3D Leaf Flipper on right half
+    const flipper = document.createElement('div');
+    flipper.className = 'book-flipper flipper-turning-next';
+    flipper.innerHTML = `
+      <div class="flipper-face flipper-front">
+        ${renderPageHtml(fromSpread.right, true)}
+        <div class="flipper-shadow flipper-shadow-front"></div>
+      </div>
+      <div class="flipper-face flipper-back">
+        ${renderPageHtml(toSpread.left, false)}
+        <div class="flipper-shadow flipper-shadow-back"></div>
+      </div>
+    `;
+
+    container.appendChild(flipper);
+
+    // Force reflow and start 3D rotation
+    void flipper.offsetWidth;
+
+    requestAnimationFrame(() => {
+      flipper.classList.add('flipped');
+    });
+
+    setTimeout(() => {
+      currentSpreadIndex = toIndex;
+      leftBase.innerHTML = renderPageHtml(toSpread.left, false);
+      if (flipper.parentNode) flipper.remove();
+      updateMeta(currentSpreadIndex);
+      container.classList.remove('page-flip-animating');
+      isBookFlipping = false;
+    }, 780);
+  }
+
+  function flipPrev() {
+    if (isBookFlipping || currentSpreadIndex <= 0) return;
+
+    if (window.innerWidth <= 768) {
+      playMobileFlip(currentSpreadIndex - 1);
+      return;
+    }
+
+    isBookFlipping = true;
+    container.classList.add('page-flip-animating');
+
+    const fromIndex = currentSpreadIndex;
+    const toIndex = currentSpreadIndex - 1;
+    const fromSpread = bookSpreads[fromIndex];
+    const toSpread = bookSpreads[toIndex];
+
+    const leftBase = container.querySelector('.book-page-left');
+    const rightBase = container.querySelector('.book-page-right');
+    if (!leftBase || !rightBase) {
+      isBookFlipping = false;
+      return;
+    }
+
+    // Underlying left page immediately holds the destination left page
+    leftBase.innerHTML = renderPageHtml(toSpread.left, false);
+
+    const oldFlipper = container.querySelector('.book-flipper');
+    if (oldFlipper) oldFlipper.remove();
+
+    // Create 3D Leaf Flipper on left half
+    const flipper = document.createElement('div');
+    flipper.className = 'book-flipper flipper-turning-prev';
+    flipper.innerHTML = `
+      <div class="flipper-face flipper-front">
+        ${renderPageHtml(fromSpread.left, false)}
+        <div class="flipper-shadow flipper-shadow-front"></div>
+      </div>
+      <div class="flipper-face flipper-back">
+        ${renderPageHtml(toSpread.right, true)}
+        <div class="flipper-shadow flipper-shadow-back"></div>
+      </div>
+    `;
+
+    container.appendChild(flipper);
+
+    void flipper.offsetWidth;
+
+    requestAnimationFrame(() => {
+      flipper.classList.add('flipped');
+    });
+
+    setTimeout(() => {
+      currentSpreadIndex = toIndex;
+      rightBase.innerHTML = renderPageHtml(toSpread.right, true);
+      if (flipper.parentNode) flipper.remove();
+      updateMeta(currentSpreadIndex);
+      container.classList.remove('page-flip-animating');
+      isBookFlipping = false;
+    }, 780);
+  }
+
+  function playMobileFlip(toIndex) {
+    isBookFlipping = true;
+    container.style.opacity = '0.35';
+    container.style.transform = 'scale(0.985)';
+    setTimeout(() => {
+      currentSpreadIndex = toIndex;
+      renderBaseSpread(currentSpreadIndex);
+      updateMeta(currentSpreadIndex);
+      container.style.opacity = '1';
+      container.style.transform = 'scale(1)';
+      isBookFlipping = false;
+    }, 240);
+  }
+
+  function goToSpread(targetIndex) {
+    if (isBookFlipping || targetIndex === currentSpreadIndex) return;
+    if (targetIndex > currentSpreadIndex) {
+      currentSpreadIndex = targetIndex - 1;
+      flipNext();
+    } else {
+      currentSpreadIndex = targetIndex + 1;
+      flipPrev();
+    }
+  }
+
+  // Button listeners
+  prevBtn.addEventListener('click', flipPrev);
+  nextBtn.addEventListener('click', flipNext);
+
+  // Click directly on pages to flip
+  const leftBase = container.querySelector('.book-page-left');
+  const rightBase = container.querySelector('.book-page-right');
+
+  if (rightBase) {
+    rightBase.addEventListener('click', (e) => {
+      if (e.target.closest('a') || e.target.closest('button')) return;
+      flipNext();
+    });
+  }
+
+  if (leftBase) {
+    leftBase.addEventListener('click', (e) => {
+      if (e.target.closest('a') || e.target.closest('button')) return;
+      flipPrev();
+    });
+  }
 
   // Keyboard navigation
   document.addEventListener('keydown', (e) => {
@@ -235,98 +449,12 @@ function initInteractiveBook() {
     const isVisible = bookRect.top < window.innerHeight && bookRect.bottom > 0;
     if (!isVisible) return;
 
-    if (e.key === 'ArrowRight' && currentSpreadIndex < bookSpreads.length - 1) {
-      currentSpreadIndex++;
-      renderSpread(currentSpreadIndex);
-      playFlipEffect();
-    } else if (e.key === 'ArrowLeft' && currentSpreadIndex > 0) {
-      currentSpreadIndex--;
-      renderSpread(currentSpreadIndex);
-      playFlipEffect();
+    if (e.key === 'ArrowRight') {
+      flipNext();
+    } else if (e.key === 'ArrowLeft') {
+      flipPrev();
     }
   });
-
-  function renderSpread(index) {
-    const spread = bookSpreads[index];
-    const leftEl = container.querySelector('.book-page-left');
-    const rightEl = container.querySelector('.book-page-right');
-
-    if (!leftEl || !rightEl) return;
-
-    // Apply quick transition class
-    leftEl.style.opacity = '0.3';
-    rightEl.style.opacity = '0.3';
-
-    setTimeout(() => {
-      // Populate Left Page
-      leftEl.innerHTML = `
-        <div class="book-page-header">
-          <span class="book-chapter">${spread.left.chapter}</span>
-          <span class="book-page-num">${spread.left.pageNum}</span>
-        </div>
-        <div class="book-page-content">
-          <h3>${spread.left.title}</h3>
-          ${spread.left.content}
-        </div>
-        <div class="book-page-footer">
-          <span>${spread.left.footer}</span>
-          <span>Educator Notebook</span>
-        </div>
-      `;
-
-      // Populate Right Page
-      rightEl.innerHTML = `
-        <div class="book-page-header">
-          <span class="book-chapter">${spread.right.chapter}</span>
-          <span class="book-page-num">${spread.right.pageNum}</span>
-        </div>
-        <div class="book-page-content">
-          <h3>${spread.right.title}</h3>
-          ${spread.right.content}
-        </div>
-        <div class="book-page-footer">
-          <span>${spread.right.footer}</span>
-          <span>Educator Notebook</span>
-        </div>
-      `;
-
-      leftEl.style.opacity = '1';
-      rightEl.style.opacity = '1';
-    }, 120);
-
-    // Update buttons
-    prevBtn.disabled = index === 0;
-    nextBtn.disabled = index === bookSpreads.length - 1;
-
-    // Update label
-    if (spreadLabel) {
-      spreadLabel.textContent = `Pages ${spread.left.pageNum}–${spread.right.pageNum} of 06`;
-    }
-
-    // Update dots
-    if (dotsContainer) {
-      dotsContainer.innerHTML = '';
-      bookSpreads.forEach((_, i) => {
-        const dot = document.createElement('button');
-        dot.className = `book-dot ${i === index ? 'active' : ''}`;
-        dot.setAttribute('aria-label', `Go to spread ${i + 1}`);
-        dot.addEventListener('click', () => {
-          currentSpreadIndex = i;
-          renderSpread(currentSpreadIndex);
-          playFlipEffect();
-        });
-        dotsContainer.appendChild(dot);
-      });
-    }
-  }
-
-  function playFlipEffect() {
-    // Subtle tactile scale effect on container
-    container.style.transform = 'scale(0.995)';
-    setTimeout(() => {
-      container.style.transform = 'scale(1)';
-    }, 180);
-  }
 }
 
 /* ==========================================================================
